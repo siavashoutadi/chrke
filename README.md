@@ -32,13 +32,34 @@ $ bash chrke install v1.1.1
 rke version v1.1.1
 rke is installed successfully!
 alias rke=/home/siavash/.chrke/bin/rke-v1.1.1
+
+$ alias rke=/home/siavash/.chrke/bin/rke-v1.1.1
+$ rke --version
+rke version v1.1.1
+```
+
+Use the alias to swith the rke version:
+
+```bash
+$ alias rke=/home/siavash/.chrke/bin/rke-v1.1.1
+$ rke --version
+rke version v1.1.1
 ```
 
 List aliases for all available rke versions:
 
 ```bash
 $ bash chrke list
+alias rke=/home/siavash/.chrke/bin/rke-v1.1.0
 alias rke=/home/siavash/.chrke/bin/rke-v1.1.1
+
+$ alias rke=/home/siavash/.chrke/bin/rke-v1.1.1
+$ rke --version
+rke version v1.1.1
+
+$ alias rke=/home/siavash/.chrke/bin/rke-v1.1.0
+$ rke --version
+rke version v1.1.0
 ```
 
 Move chrke to a directory in PATH for easier access:
@@ -47,5 +68,6 @@ Move chrke to a directory in PATH for easier access:
 $ chmod +x chrke
 $ sudo mv chrke /usr/local/bin/
 $ chrke list
+alias rke=/home/siavash/.chrke/bin/rke-v1.1.0
 alias rke=/home/siavash/.chrke/bin/rke-v1.1.1
 ```
