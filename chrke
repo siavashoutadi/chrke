@@ -1,0 +1,92 @@
+#!/usr/bin/env bash
+
+chrkeHome="$HOME/.chrke"
+chrkeBinDir="${chrkeHome}/bin"
+rkeVersion=""
+
+displayHelp()
+{
+    echo "usage: chrke OPTIONS RKE_VERSION"
+    echo ""
+    echo "options:"
+    echo " install        Installs requested rke version if it isn't installed yet."
+    echo "                Example: chrke install v1.1.1"
+    echo ""
+    echo " list           Display alias commands to easily switch between different"
+    echo "                version of rke."
+    echo "                Example: chrke list v1.1.1"
+    echo ""
+}
+
+list()
+{
+    if ls ${chrkeBinDir} > /dev/null 2>&1; then
+        binaries=$(find ${chrkeBinDir} -maxdepth 1 -type f | sort)
+
+        if [ -z "${binaries}" ];
+        then
+            echo "No vesion of rke is installed!"
+        fi
+
+        for binary in ${binaries};
+        do
+            echo "alias rke=${binary}"
+        done
+    else
+        echo "No vesion of rke is installed!"
+    fi
+}
+
+parseVersion()
+{
+    rkeVersion="$1"
+    if [ -z "${rkeVersion}" ];
+    then
+        echo "The rke version is required!"
+        exit 1
+    fi
+}
+
+install()
+{
+    dest="${chrkeBinDir}/rke-${rkeVersion}"
+
+    if ls ${dest} > /dev/null 2>&1; then
+        echo "rke ${rkeVersion} is already installed!"
+        exit 0
+    fi
+    rkeReleasUrl="https://github.com/rancher/rke/releases"
+    rkeUrl="$rkeReleasUrl/download/${rkeVersion}/rke_linux-amd64"
+
+    if curl --output /dev/null --silent --head --fail "$rkeUrl"; then
+        curl --silent -L --create-dirs --output "${dest}" ${rkeUrl}
+        chmod +x "${dest}"
+        if ! $dest --version; then
+            echo "Could not install rke!"
+            echo "${output}"
+            exit 1
+        fi
+        echo "rke is installed successfully!"
+        echo "alias rke=${dest}"
+
+    else
+        echo "Could not find the specified version!"
+        echo "Check if the release is availble on: $rkeReleasUrl"
+    fi
+}
+
+case "$1" in
+    install)
+        shift
+        parseVersion $1
+        install
+        ;;
+    list)
+        list
+        ;;
+    *)
+        displayHelp
+        exit 1
+esac
+
+exit 0
